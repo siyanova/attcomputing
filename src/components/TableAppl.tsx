@@ -11,8 +11,8 @@ export const TableAppl = () => {
           <th className="w-[130px] py-[15px] px-[50px]">СТАТУС</th>
         </thead>
         <tbody>
-          <tr className="items-center border-b ">
-            <td className=" py-[15px] px-[15px]">
+          <tr className="items-center border-b">
+            <td className="py-[15px] px-[15px]">
               <div className="pl-[10px]">00001</div>
             </td>
             <td>

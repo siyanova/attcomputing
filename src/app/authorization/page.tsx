@@ -21,8 +21,6 @@ export default function AuthorizationPage() {
     e.preventDefault();
     if (email === correntEmail && password === correntPassword) {
         redirect('/authorization');
-        localStorage.removeItem('authToken');
-
     } else {
       alert("ошибка");
     }
