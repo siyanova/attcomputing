@@ -1,14 +1,23 @@
+import Image from "next/image";
+import PathStart from "../../public/PathStart.svg";
+import PathEnd from "../../public/PathEnd.svg";
+import Delete from "../../public/Delete.svg";
+import Edit from "../../public/Edit.svg";
+
 export const TableAppl = () => {
   return (
-    <div className="text-[14px] bg-[#F5F6FA] p-[30px] text-center">
-      <table className="table-auto bg-white border border-collapse  rounded-lg">
+    <div className="text-[14px] top-0 right-0 h-screen w-full bg-[#F5F6FA] p-[20px] text-center">
+      <table className="table-auto bg-white border-collapse  rounded-lg">
         <thead className="font-bold border-b bg-[#D5D5D5] bg-opacity-10">
-          <th className="w-[80px] py-[15px] px-[15px]">ID</th>
-          <th className="w-[100px] py-[15px] px-[80px]">НАИМЕНОВАНИЕ</th>
-          <th className="w-[90px] py-[15px] px-[50px]">ПРЕПОДАВАТЕЛЬ</th>
-          <th className="w-[90px] py-[15px] px-[50px]">ДАТА</th>
-          <th className="w-[130px] py-[15px] px-[80px]">ИНЖЕНЕР</th>
-          <th className="w-[130px] py-[15px] px-[50px]">СТАТУС</th>
+          <tr>
+            <th className="w-[80px] py-[15px] px-[15px]">ID</th>
+            <th className="w-[100px] py-[15px] px-[80px]">НАИМЕНОВАНИЕ</th>
+            <th className="w-[90px] py-[15px] px-[50px]">ПРЕПОДАВАТЕЛЬ</th>
+            <th className="w-[90px] py-[15px] px-[50px]">ДАТА</th>
+            <th className="w-[130px] py-[15px] px-[80px]">ИНЖЕНЕР</th>
+            <th className="w-[130px] py-[15px] px-[50px]">СТАТУС</th>
+            <th className=" py-[15px] px-[50px]"></th>
+          </tr>
         </thead>
         <tbody>
           <tr className="items-center border-b">
@@ -39,9 +48,32 @@ export const TableAppl = () => {
                 Выполнено
               </div>
             </td>
+            <td className=" ">
+              <div className="flex justify-left my-auto gap-3">
+                <button>
+                  <Image src={Edit} alt="Edit" className=" w-[20px] h-[20px]" />
+                </button>
+                <button>
+                  <Image
+                    src={Delete}
+                    alt="Delete"
+                    className="w-[20px] h-[20px]"
+                  />
+                </button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
+      <div className="flex bg-white justify-center ml-auto mt-2 p-2 gap-2 w-[60px]  border rounded-lg">
+        <button>
+          <Image src={PathStart} alt="path" />
+        </button>
+        <div className="border"></div>
+        <button>
+          <Image src={PathEnd} alt="path" />
+        </button>
+      </div>
     </div>
   );
 };
