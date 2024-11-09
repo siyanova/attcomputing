@@ -1,33 +1,61 @@
-'use client'
+"use client";
+
 import Image from "next/image";
 import { useState } from "react";
-import { redirect } from 'next/navigation'
 import logo from "../../../public/logo.png";
-export default function AuthorizationPage() {
-  const correntEmail: string = "user";
-  const correntPassword: string = "123";
-  
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema } from "@/components/schemas/auth";
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+type AuthProps = {
+  email: string;
+  password: string;
+};
+
+export default function AuthorizationPage() {
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<AuthProps>({
+    resolver: zodResolver(formSchema),
+  });
+
+
+  const handleLogin = async (formData: AuthProps) => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5050/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData)
+      });
   
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email === correntEmail && password === correntPassword) {
-        redirect('/authorization');
-    } else {
-      alert("ошибка");
+      if (!response.ok) {
+        throw new Error("Ошибка авторизации");
+      }
+  
+      const responseData = await response.json();
+  
+      localStorage.setItem("jwtToken", responseData.token);
+  
+      router.push("/");
+    } catch (e) {
+      alert(`Ошибка: ${e}`);
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <form
-      onSubmit={handleLogin}
+      onSubmit={handleSubmit(handleLogin)}
       className="bg-cover bg-center bg-no-repeat bg-[url('../../public/Shape.png')]"
     >
       <div className="flex flex-col items-center justify-center h-screen">
@@ -44,8 +72,7 @@ export default function AuthorizationPage() {
           <div className="flex flex-col gap-[15px]">
             <p className="text-[18px]">Email :</p>
             <input
-              value={email}
-              onChange={handleEmailChange}
+              {...register("email")}
               type="text"
               className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
               placeholder="esteban_schiller@att.ru"
@@ -55,8 +82,7 @@ export default function AuthorizationPage() {
             <p className="text-[18px]">Пароль :</p>
             <div className="relative">
               <input
-                value={password}
-                onChange={handlePasswordChange}
+                {...register("password")}
                 type="text"
                 className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
                 placeholder={"\u2022 \u2022 \u2022 \u2022 \u2022 \u2022"}
@@ -65,6 +91,7 @@ export default function AuthorizationPage() {
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="rounded-lg mx-[60px] border-2 bg-[#4880FF] text-white p-[10px] text-[20px mt-[30px]"
           >
             Войти
