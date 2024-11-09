@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../../public/logo.png";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,13 @@ type AuthProps = {
 
 export default function AuthorizationPage() {
   const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      router.push("/");
+    }
+  }, []);
 
   const [loading, setLoading] = useState(false);
 
@@ -77,17 +84,19 @@ export default function AuthorizationPage() {
               className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
               placeholder="esteban_schiller@att.ru"
             />
+            <p>{errors.email?.message}</p>
           </div>
           <div className="flex flex-col gap-[15px]">
             <p className="text-[18px]">Пароль :</p>
             <div className="relative">
               <input
                 {...register("password")}
-                type="text"
+                type="password"
                 className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
                 placeholder={"\u2022 \u2022 \u2022 \u2022 \u2022 \u2022"}
               />
             </div>
+            <p>{errors.password?.message}</p>
           </div>
           <button
             type="submit"

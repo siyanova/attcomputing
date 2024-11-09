@@ -1,8 +1,9 @@
+import Bg from "@/components/BG";
 
 export default function Home() {
   return (
-    <div className="flex w-full ">
-      
-    </div>
+    <Bg>
+      da
+    </Bg>
   );
 }

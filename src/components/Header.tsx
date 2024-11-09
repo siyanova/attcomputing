@@ -1,8 +1,15 @@
 import Image from "next/image";
 import logo from "../../public/logo.png";
-import Hide from "../../public/Hide.svg";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+
 export const Header = () => {
+  const router = useRouter();
+  const Exit = () => {
+    localStorage.removeItem("jwtToken");
+    router.push("/authorization")
+  }
   return (
     <div className="flex h-screen bg-white min-w-[200px] flex-col  ">
       <Image
@@ -51,8 +58,7 @@ export const Header = () => {
         </div>
         <div className="h-full border border-gray-200"></div>
         <div className="flex flex-row items-center text-black hover:text-white hover:transition-colors duration-300 hover:bg-[#4880FF] hover:rounded-lg hover:p-[15px] hover:ml-6 hover:my-0 text-left my-[15px] ml-10">
-          <Link href="/authorization">
-            <button className="flex flex-row items-center gap-[16px]">
+            <button className="flex flex-row items-center gap-[16px]" onClick={Exit}>
               <svg
                 width="17"
                 height="20"
@@ -65,7 +71,6 @@ export const Header = () => {
               </svg>
               <p className="text-[14px] text-left">Выйти</p>
             </button>
-          </Link>
         </div>
       </div>
     </div>
