@@ -1,9 +1,10 @@
-import { Header } from "@/components/Header"
+
+import { Engeneer } from "@/components/Engeneer";
+import Bg from "@/components/BG";
 export default function EngeneersPage(){
     return(
-        <div>
-            <Header/>
-            <p>dfguosdfgj</p>
-        </div>
+    <Bg>
+        <Engeneer/>
+    </Bg>
     )
 }
