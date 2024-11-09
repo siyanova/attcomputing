@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import logo from "../../../public/logo.png";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "@/components/schemas/auth";
+import Button from "@/components/Button";
 
 type AuthProps = {
   email: string;
@@ -24,6 +24,7 @@ export default function AuthorizationPage() {
   }, []);
 
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     handleSubmit,
@@ -33,7 +34,6 @@ export default function AuthorizationPage() {
     resolver: zodResolver(formSchema),
   });
 
-
   const handleLogin = async (formData: AuthProps) => {
     setLoading(true);
     try {
@@ -42,24 +42,26 @@ export default function AuthorizationPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
-  
+
       if (!response.ok) {
-        throw new Error("Ошибка авторизации");
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message || "Ошибка авторизации");
       }
-  
+
       const responseData = await response.json();
-  
+
       localStorage.setItem("jwtToken", responseData.token);
-  
+
       router.push("/");
     } catch (e) {
-      alert(`Ошибка: ${e}`);
+      setServerError(e.message);
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <form
       onSubmit={handleSubmit(handleLogin)}
@@ -68,7 +70,7 @@ export default function AuthorizationPage() {
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="flex flex-col gap-[30px] p-[50px] pb-[80px] rounded-[30px] border-2 bg-white">
           <div className="flex flex-row gap-[44px] items-center">
-            <Image src={logo} alt="logo" className="w-[160px] h-[130px]" />
+            <Image src={"/logo.png"} alt="logo" width={160} height={130} />
             <div className="flex flex-col">
               <p className="text-[32px] font-bold">Войти в аккаунт</p>
               <p className="text-[18px] text-[#202224]">
@@ -84,27 +86,26 @@ export default function AuthorizationPage() {
               className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
               placeholder="esteban_schiller@att.ru"
             />
-            <p>{errors.email?.message}</p>
+            <p className="text-sm text-red-500">{errors.email?.message}</p>
           </div>
           <div className="flex flex-col gap-[15px]">
             <p className="text-[18px]">Пароль :</p>
-            <div className="relative">
-              <input
-                {...register("password")}
-                type="password"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder={"\u2022 \u2022 \u2022 \u2022 \u2022 \u2022"}
-              />
-            </div>
-            <p>{errors.password?.message}</p>
+            <input
+              {...register("password")}
+              type="password"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder={"\u2022 \u2022 \u2022 \u2022 \u2022 \u2022"}
+            />
+            <p className="text-sm text-red-500">{errors.password?.message}</p>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg mx-[60px] border-2 bg-[#4880FF] text-white p-[10px] text-[20px mt-[30px]"
-          >
-            Войти
-          </button>
+          <div className="w-full">
+            <Button disabled={loading} text="Войти" className="w-full"/>
+            {serverError && (
+              <p className="text-red-500 text-sm w-fit pt-2 mx-auto">
+                Неверная почта или пароль
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </form>
