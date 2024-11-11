@@ -2,6 +2,8 @@ import Image from "next/image";
 import filter from "../../public/filter.svg";
 import path from "../../public/Path.svg";
 import replay from "../../public/ic-replay-24px.svg";
+import React from "react";
+import InputMa
 export const Filter = () => {
   return (
     <div className="p-[20px] gap-24 items-end flex w-full bg-[#F5F6FA]">
@@ -20,7 +22,7 @@ export const Filter = () => {
                 />
               </td>
               <td>
-                <p className="px-[23px] py-[10px]">Дата</p>
+                <input className="px-[23px] py-[10px] w-full rounded-md border border-gray-300 focus:outline-none focus:border-blue-500" placeholder="Дата"></input>
               </td>
               <td>
                 <button className="flex px-[23px] py-[10px] items-center gap-[6px]">
