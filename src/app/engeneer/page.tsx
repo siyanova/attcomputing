@@ -3,6 +3,8 @@
 import Bg from "@/components/BG";
 import Button from "@/components/Button";
 import Engeneer from "@/components/Engineer";
+import PopUpAddEngineer from "@/components/PopUpAddEngineer";
+import { Modal } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -16,6 +18,9 @@ type Engineer = {
 export default function EngeneersPage() {
   const [loading, setLoading] = useState(false);
   const [engineers, setEngineers] = useState<Engineer[]>([]);
+  const [popUpAddEngineer, setPopUpAddEngineer] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     axios
@@ -34,24 +39,48 @@ export default function EngeneersPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
-  console.log(loading);
+  }, [refresh]);
+
   return (
     <Bg>
       <div className="p-[20px] h-full  bg-[#F5F6FA] w-[1330px] ">
+        <Modal
+          open={popUpAddEngineer}
+          onClose={() => setPopUpAddEngineer(false)}
+          closeAfterTransition
+          disableEnforceFocus
+          className="flex justify-center items-center"
+        >
+          <PopUpAddEngineer
+            setPopUp={setPopUpAddEngineer}
+            title="Добавить инженера"
+            engineers={engineers}
+            setEngineers={setEngineers}
+          />
+        </Modal>
         <div className="flex justify-between items-center">
           <h1 className="text-[32px] text-[#013970] font-bold">Инженеры</h1>
-          <Button text="Добавить инженера" />
+          <Button
+            text="Добавить инженера"
+            onClick={() => setPopUpAddEngineer(true)}
+          />
         </div>
         <div className="grid grid-cols-3 gap-[30px] justify-between mt-10">
-          {engineers.map((items, index) => (
-            <Engeneer
-              key={index}
-              name={items.Name}
-              email={items.Email}
-              telegramId={items.TelegramID}
-            />
-          ))}
+          {loading || !engineers ? (
+            <div className="bg-white w-full h-[360px] border rounded-lg"></div>
+          ) : (
+            engineers.map((items, index) => (
+              <Engeneer
+                key={index}
+                id={items.ID}
+                name={items.Name}
+                email={items.Email}
+                telegramId={items.TelegramID}
+                engineers={engineers}
+                setEngineers={setEngineers}
+              />
+            ))
+          )}
         </div>
       </div>
     </Bg>
