@@ -98,7 +98,7 @@ const Engeneer = ({ id, name, email, telegramId, setEngineers }: Props) => {
       <Image className="rounded-t-lg" src={ImageEngeneer} alt="Engeneer" />
       <div className="flex gap-2 justify-between w-full px-5">
         <button onClick={() => setOpenPopUpDelete(true)}>
-          <Image src={"/DeleteBlack.svg"} alt="Delete" width={20} height={20} />
+        <Image src={"/Delet.svg"} alt="Delete" width={20} height={20} className="fill-black"/>
         </button>
         <button onClick={() => setOpenPopUpUpdape(true)}>
           <Image src={"/EditBlack.svg"} alt="Edit" width={20} height={20} />
