@@ -2,7 +2,7 @@
 
 import Bg from "@/components/BG";
 import Button from "@/components/Button";
-import Engeneer from "@/components/Engineer";
+import Engineer from "@/components/Engineer";
 import PopUpAddEngineer from "@/components/PopUpAddEngineer";
 import { Modal } from "@mui/material";
 import axios from "axios";
@@ -65,12 +65,16 @@ export default function EngeneersPage() {
             onClick={() => setPopUpAddEngineer(true)}
           />
         </div>
-        <div className="grid grid-cols-3 gap-[30px] justify-between mt-10">
+        <div className="grid grid-cols-3 gap-[30px]  mt-10">
           {loading || !engineers ? (
-            <div className="bg-white w-full h-[360px] border rounded-lg"></div>
+            <>
+              <div className="bg-white w-full h-[131px] border rounded-lg "></div>
+              <div className="bg-white w-full h-[131px] border rounded-lg"></div>
+              <div className="bg-white w-full h-[131px] border rounded-lg "></div>
+            </>
           ) : (
             engineers.map((items, index) => (
-              <Engeneer
+              <Engineer
                 key={index}
                 id={items.ID}
                 name={items.Name}

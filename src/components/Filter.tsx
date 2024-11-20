@@ -4,7 +4,7 @@ import filter from "../../public/filter.svg";
 import path from "../../public/Path.svg";
 import React from "react";
 import { useState } from "react";
-import { PopUpBg } from "./PopUpBg";
+import Button from "@/components/Button";
 export const Filter = () => {
   const [date, setDate] = useState("");
 
@@ -45,9 +45,10 @@ export const Filter = () => {
                 />
               </td>
               <td>
-                <input placeholder="Преподаватель" className="flex px-[23px] py-[10px] w-full rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 items-center gap-[6px]">
-                  
-                </input>
+                <input
+                  placeholder="Преподаватель"
+                  className="flex px-[23px] py-[10px] w-full rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 items-center gap-[6px]"
+                ></input>
               </td>
               <td>
                 <div className="relative">
@@ -82,9 +83,7 @@ export const Filter = () => {
                         </button>
                       </div>
                       <div className="border"></div>
-                      <button className="border rounded-lg text-white mx-auto text-[14px] bg-[#4880FF] hover:bg-opacity-50 hover:text-black hover:transition-colors duration-300 px-[30px] py-[10px]">
-                        Применить
-                      </button>
+                      <Button text="Применить" className="mx-auto px-[30px]" />
                     </div>
                   </div>
                 </div>
@@ -93,9 +92,7 @@ export const Filter = () => {
           </tbody>
         </table>
         <div className="flex flex-row gap-5 ">
-          <button className="border rounded-lg text-white text-[14px] ml-auto bg-[#4880FF] hover:bg-opacity-50 hover:text-black hover:transition-colors duration-300 px-[30px] py-[10px]">
-            Применить
-          </button>
+          <Button text="Применить" className=" px-[30px] text-[14px]" />
           <button className="flex  rounded-lg px-[23px] text-[14px] hover:bg-[#EA0234] text-[#EA0234] hover:transition-colors duration-300 hover:text-white py-[10px] items-center gap-[6px]">
             <svg
               width="24"
@@ -110,9 +107,10 @@ export const Filter = () => {
           </button>
         </div>
       </div>
-      <button className="border rounded-lg text-white text-[14px] mt-[20px] bg-[#4880FF] hover:bg-opacity-50 hover:text-black hover:transition-colors duration-300 px-[30px] py-[10px]">
-        Добавить заявку
-      </button>
+      <Button
+        text="Добавить заявку"
+        className=" px-[30px] text-[14px] mt-[20px]"
+      />
     </div>
   );
 };

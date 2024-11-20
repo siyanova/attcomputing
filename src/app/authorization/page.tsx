@@ -55,7 +55,7 @@ export default function AuthorizationPage() {
       localStorage.setItem("jwtToken", responseData.token);
 
       router.push("/");
-    } catch (e) {
+    } catch (e : any) {
       setServerError(e.message);
     } finally {
       setLoading(false);

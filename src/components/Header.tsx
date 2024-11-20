@@ -2,9 +2,21 @@ import Image from "next/image";
 import logo from "../../public/logo.png";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export const Header = () => {
   const router = useRouter();
+  const checkTokenExpiration = () => {
+    const tokenExpirationTime = localStorage.getItem("tokenExpirationTime");
+    if (tokenExpirationTime && new Date() > new Date(tokenExpirationTime)) {
+      localStorage.removeItem("jwtToken");
+      router.push("/authorization");
+    }
+  };
+
+  useEffect(() => {
+    checkTokenExpiration();
+  }, []); 
   const Exit = () => {
     localStorage.removeItem("jwtToken");
     router.push("/authorization");

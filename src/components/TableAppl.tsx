@@ -5,7 +5,6 @@ import PathEnd from "../../public/PathEnd.svg";
 import Delete from "../../public/Delete.svg";
 import Edit from "../../public/Edit.svg";
 import Path from "../../public/Path.svg";
-import PathWarp from "../../public/PathWarp.svg";
 import React, { useState } from "react";
 
 export const TableAppl = () => {
@@ -30,15 +29,15 @@ export const TableAppl = () => {
         <tbody>
           <tr className="items-center border-b rounded-full border-collapse">
             <td className="wrap py-[15px] px-[15px] items-center flex">
-              <button onClick={toggleNestedTable}>
+              <button onClick={toggleNestedTable} className="">
                 {showNestedTable ? (
                   <Image
                     src={Path}
                     alt="Path"
-                    className="transform rotate-180"
+                    className="transform rotate-180 transition-transform duration-500"
                   />
                 ) : (
-                  <Image src={Path} alt="Path" />
+                  <Image src={Path} alt="Path" className=" transition-transform duration-500 "/>
                 )}
               </button>
               <div className="pl-[10px]">00001</div>

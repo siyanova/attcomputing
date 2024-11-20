@@ -11,7 +11,7 @@ const Button = ({ disabled, text, className, onClick }: Props) => {
             type="submit"
             disabled={disabled}
             onClick={onClick}
-            className={`rounded-lg bg-[#4880FF] text-white p-[10px] text-[20px hover:bg-[#568AFF] duration-300 h-fit ${className}`
+            className={`rounded-lg bg-[#4880FF] text-white p-[10px] text-[20px hover:bg-[#568AFF] duration-300 ${className}`
 }
             >
               {text}
