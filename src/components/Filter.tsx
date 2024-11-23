@@ -5,12 +5,15 @@ import path from "../../public/Path.svg";
 import React from "react";
 import { useState } from "react";
 import Button from "@/components/Button";
+
+ 
+
 export const Filter = () => {
   const [date, setDate] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value;
-    if (inputValue.length <= 10) {
+    if (inputValue.length <= 8) {
       if (/^\d{2}$/.test(inputValue)) {
         e.target.value = inputValue + "/";
       } else if (/^\d{2}\/\d{2}$/.test(inputValue)) {
@@ -19,13 +22,17 @@ export const Filter = () => {
       setDate(e.target.value);
     }
   };
+  const [showStatus, setShowStatus] = useState(false);
+  const toggleStatus = () => {
+    setShowStatus(!showStatus);
+  };
   const [isPopupOpen, setPopupOpen] = useState(false);
   return (
-    <div className="p-[20px] flex-col items-start flex w-full bg-[#F5F6FA]">
+    <div className="p-[20px] 2xl:max-w-[1240px] 2xl:mx-auto flex-col items-start flex w-full">
       <h1 className="text-[32px] text-[#013970] font-bold mt-[25px]">
         Список Заявок
       </h1>
-      <div className="mt-[20px] flex items-center gap-5 w-full">
+      <div className="mt-[20px] flex  items-center gap-5 w-full">
         <table className="table-fixed text-[14px] bg-white border-collapse  rounded-lg">
           <tbody>
             <tr>
@@ -53,11 +60,26 @@ export const Filter = () => {
               <td>
                 <div className="relative">
                   <button
-                    onClick={() => setPopupOpen(!isPopupOpen)}
+                    onClick={() => {
+                      setPopupOpen(!isPopupOpen);
+                      toggleStatus();
+                    }}
                     className=" flex px-[23px] py-[10px] items-center gap-[6px]"
                   >
                     <p>Статус заявки</p>
-                    <Image src={path} alt="path" />
+                    {showStatus ? (
+                      <Image
+                        src={path}
+                        alt="Path"
+                        className="transform rotate-180 transition-transform duration-500"
+                      />
+                    ) : (
+                      <Image
+                        src={path}
+                        alt="Path"
+                        className=" transition-transform duration-500 "
+                      />
+                    )}
                   </button>
                   <div
                     className={`absolute ${

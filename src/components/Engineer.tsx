@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import ImageEngeneer from "../../public/ImageEngeneer2.png";
 import { Modal } from "@mui/material";
 import { Dispatch, SetStateAction, useState } from "react";
 import { PopUpBg } from "./PopUpBg";
@@ -61,7 +60,7 @@ const Engeneer = ({ id, name, email, telegramId, setEngineers }: Props) => {
     }
   };
   return (
-    <div className="bg-white flex p-5 text-[16px] gap-3 text-center items-center  border rounded-lg">
+    <div className="bg-white flex p-5 text-[16px] gap-3 text-center  items-center  border rounded-lg">
       <Modal
         open={openPopUpDelete}
         onClose={() => setOpenPopUpDelete(false)}

@@ -43,7 +43,7 @@ export default function EngeneersPage() {
 
   return (
     <Bg>
-      <div className="p-[20px] h-full  bg-[#F5F6FA] w-[1330px] ">
+      <div className="p-[20px] h-full 2xl:mx-auto bg-[#F5F6FA] w-[1330px] ">
         <Modal
           open={popUpAddEngineer}
           onClose={() => setPopUpAddEngineer(false)}

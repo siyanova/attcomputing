@@ -16,18 +16,20 @@ export const Header = () => {
 
   useEffect(() => {
     checkTokenExpiration();
-  }, []); 
+  }, []);
   const Exit = () => {
     localStorage.removeItem("jwtToken");
     router.push("/authorization");
   };
   return (
     <div className="flex h-screen bg-white min-w-[200px] flex-col  ">
-      <Image
-        className=" mt-[32px] w-[160px] h-[130px] mx-auto"
-        src={logo}
-        alt="logo"
-      />
+      <Link href={"/"}>
+        <Image
+          className=" mt-[32px] w-[160px] h-[130px] mx-auto"
+          src={logo}
+          alt="logo"
+        />
+      </Link>
       <div className="mt-[57px] flex gap-[10px] flex-col">
         <Link
           href="/engeneer"
@@ -48,7 +50,7 @@ export const Header = () => {
           </button>
         </Link>
         <Link
-          href="/listRequests"
+          href="/"
           className="flex flex-row items-center text-black hover:text-white hover:transition-colors duration-300 hover:bg-[#4880FF] hover:rounded-lg hover:p-[15px] hover:ml-6 hover:my-0 text-left my-[15px] ml-10  "
         >
           <button className="flex flex-row items-center gap-[16px]">

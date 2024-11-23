@@ -14,9 +14,9 @@ const Bg = ({ children }: PropsWithChildren) => {
     }
   }, [router]);
   return (
-    <div className="flex w-full h-screen">
-          <Header />
-          {children}
+    <div className="flex w-full h-full">
+      <Header />
+      <div className="bg-[#F5F6FA] w-full">{children}</div>
     </div>
   );
 };

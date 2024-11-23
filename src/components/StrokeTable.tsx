@@ -1,0 +1,232 @@
+import Image from "next/image";
+import Path from "../../public/Path.svg";
+import { Dispatch, SetStateAction, useState } from "react";
+import axios from "axios";
+import { Modal } from "@mui/material";
+import PopUpUpdateEngineer from "./PopUpUpdateEngineer";
+import { PopUpBg } from "./PopUpBg";
+import Button from "./Button";
+
+type TableAppls = {
+  ID: string;
+  Description: {
+    String: string;
+    Valid: boolean;
+  };
+  IDEngineer: {
+    Int64: number;
+    Valid: boolean;
+  };
+  Cabinet: {
+    String: string;
+    Valid: boolean;
+  };
+  Status: {
+    String: string;
+    Valid: boolean;
+  };
+  NameTeacher: {
+    String: string;
+    Valid: boolean;
+  };
+  StartDate: string;
+  EndDate: {
+    Time: string;
+    Valid: boolean;
+  };
+};
+
+type Props = {
+  id: string;
+  name: {
+    String: string;
+    Valid: boolean;
+  }
+  engeneer: {
+    Int64:number;
+    Valid: boolean;
+  }
+  office: {
+    String: string;
+    Valid: boolean;
+  }
+  status: {
+    String: string;
+    Valid: boolean;
+  }
+  teacher: {
+    String: string;
+    Valid: boolean;
+  }
+  startDate: string;
+  endDate: {
+    Time: string;
+    Valid: boolean;
+  }
+  tableAppl: TableAppls[];
+  setTableAppl: Dispatch<SetStateAction<TableAppls[]>>;
+};
+
+export const StrokeTable = ({
+  id,
+  name,
+  engeneer,
+  office,
+  status,
+  teacher,
+  startDate,
+  endDate,
+  setTableAppl,
+}: Props) => {
+  const [openPopUpDelete, setOpenPopUpDelete] = useState(false);
+  const [openPopUpUpdate, setOpenPopUpUpdape] = useState(false);
+
+  const lastStroke: TableAppls = {
+    ID: id,
+    Description: name,
+    IDEngineer: engeneer,
+    Cabinet: office,
+    Status: status,
+    NameTeacher: teacher,
+    StartDate: startDate,
+    EndDate: endDate,
+  };
+  const dateObject: Date = new Date(startDate);
+  const dateObject1: Date = new Date(endDate.Time);
+
+  const formattedDate1: string = dateObject1.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit'});
+  const formattedDate: string = dateObject.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' ,year: '2-digit' });
+  const handleDeleteStroke = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5050/deleteApplication?id=${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setTableAppl((prevTableAppl) =>
+          prevTableAppl.filter((tableAppl) => tableAppl.ID !== id)
+        );
+        setOpenPopUpDelete(false);
+      } else {
+        throw new Error("Ошибка при удалении инженера");
+      }
+    } catch (error) {
+      console.error("Ошибка:", error);
+    }
+  };
+  const [showNestedTable, setShowNestedTable] = useState(false);
+
+  const toggleNestedTable = () => {
+    setShowNestedTable(!showNestedTable);
+  };
+  return (
+    <tbody className="border-t-2 rounded-lg">
+      <Modal
+        open={openPopUpDelete}
+        onClose={() => setOpenPopUpDelete(false)}
+        closeAfterTransition
+        className="flex justify-center items-center"
+      >
+        <PopUpBg>
+          <button
+            className="absolute right-[20px] top-[20px]"
+            onClick={() => setOpenPopUpDelete(false)}
+            tabIndex={0}
+          >
+            <Image src={"/Close.svg"} alt="close" width={20} height={20} />
+          </button>
+          <h2 className="mb-4 lg:mb-8 mx-auto text-base lg:text-2xl lg:leading-[28px] font-semibold text-center">
+            Вы уверены что хотите удалить задачу?
+          </h2>
+          <Button text="Удалить" onClick={() => handleDeleteStroke()} />
+        </PopUpBg>
+      </Modal>
+      <tr className="items-center rounded-full border-collapse">
+        <td className="wrap py-[15px] px-[15px] items-center flex">
+          <button
+            onClick={toggleNestedTable}
+            className="flex  items-center gap-2"
+          >
+            {showNestedTable ? (
+              <Image
+                src={Path}
+                alt="Path"
+                className="transform rotate-180 transition-transform duration-500"
+              />
+            ) : (
+              <Image
+                src={Path}
+                alt="Path"
+                className="transition-transform duration-500 "
+              />
+            )}
+            {id}
+          </button>
+        </td>
+        <td>
+          <p className="p-4 max-w-[200px] mx-auto break-words">{name.String}</p>
+        </td>
+        <td>
+          <p className="p-4 max-w-[200px] mx-auto break-words">{engeneer.Int64}</p>
+        </td>
+        <td>
+          <p className="p-4 max-w-[200px] mx-auto break-words">{office.String}</p>
+        </td>
+        <td>
+          <div className="text-[#00B69B] bg-[#00B69B] bg-opacity-20  text-[12px] rounded-md my-[24px] font-bold mx-[50px] px-4 py-2">
+            {status.String}
+          </div>
+        </td>
+        <td>
+          <div className="flex gap-2 w-full px-5">
+            <button className=" rounded-full shadow-md shadow-[#3F7AFF] bg-[#4880FF] fill-white py-3 px-2 duration-300 hover:shadow-[#D5D5D5] border border-[#4880FF] hover:border-[#D5D5D5] hover:fill-[#4880FF] hover:bg-white">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M18.0189 6.18V1C18.0189 0.734784 17.9133 0.48043 17.7253 0.292893C17.5373 0.105357 17.2823 0 17.0165 0C16.7507 0 16.4957 0.105357 16.3077 0.292893C16.1198 0.48043 16.0141 0.734784 16.0141 1V6.18C15.4336 6.3902 14.9321 6.77363 14.5776 7.27816C14.2232 7.7827 14.033 8.38388 14.033 9C14.033 9.61612 14.2232 10.2173 14.5776 10.7218C14.9321 11.2264 15.4336 11.6098 16.0141 11.82V19C16.0141 19.2652 16.1198 19.5196 16.3077 19.7071C16.4957 19.8946 16.7507 20 17.0165 20C17.2823 20 17.5373 19.8946 17.7253 19.7071C17.9133 19.5196 18.0189 19.2652 18.0189 19V11.82C18.5994 11.6098 19.1009 11.2264 19.4554 10.7218C19.8099 10.2173 20 9.61612 20 9C20 8.38388 19.8099 7.7827 19.4554 7.27816C19.1009 6.77363 18.5994 6.3902 18.0189 6.18ZM17.0165 10C16.8183 10 16.6245 9.94135 16.4596 9.83147C16.2948 9.72159 16.1663 9.56541 16.0904 9.38268C16.0146 9.19996 15.9947 8.99889 16.0334 8.80491C16.0721 8.61093 16.1675 8.43275 16.3077 8.29289C16.4479 8.15304 16.6265 8.0578 16.821 8.01921C17.0154 7.98063 17.2169 8.00043 17.4001 8.07612C17.5832 8.15181 17.7398 8.27998 17.8499 8.44443C17.9601 8.60888 18.0189 8.80222 18.0189 9C18.0189 9.26522 17.9133 9.51957 17.7253 9.70711C17.5373 9.89464 17.2823 10 17.0165 10ZM11.0024 12.18V1C11.0024 0.734784 10.8968 0.48043 10.7088 0.292893C10.5208 0.105357 10.2658 0 10 0C9.73416 0 9.4792 0.105357 9.29123 0.292893C9.10325 0.48043 8.99764 0.734784 8.99764 1V12.18C8.41712 12.3902 7.91556 12.7736 7.5611 13.2782C7.20665 13.7827 7.0165 14.3839 7.0165 15C7.0165 15.6161 7.20665 16.2173 7.5611 16.7218C7.91556 17.2264 8.41712 17.6098 8.99764 17.82V19C8.99764 19.2652 9.10325 19.5196 9.29123 19.7071C9.4792 19.8946 9.73416 20 10 20C10.2658 20 10.5208 19.8946 10.7088 19.7071C10.8968 19.5196 11.0024 19.2652 11.0024 19V17.82C11.5829 17.6098 12.0844 17.2264 12.4389 16.7218C12.7933 16.2173 12.9835 15.6161 12.9835 15C12.9835 14.3839 12.7933 13.7827 12.4389 13.2782C12.0844 12.7736 11.5829 12.3902 11.0024 12.18ZM10 16C9.80175 16 9.60796 15.9414 9.44312 15.8315C9.27828 15.7216 9.14981 15.5654 9.07394 15.3827C8.99808 15.2 8.97823 14.9989 9.0169 14.8049C9.05558 14.6109 9.15104 14.4327 9.29123 14.2929C9.43141 14.153 9.61001 14.0578 9.80445 14.0192C9.99889 13.9806 10.2004 14.0004 10.3836 14.0761C10.5667 14.1518 10.7233 14.28 10.8334 14.4444C10.9436 14.6089 11.0024 14.8022 11.0024 15C11.0024 15.2652 10.8968 15.5196 10.7088 15.7071C10.5208 15.8946 10.2658 16 10 16ZM3.98585 4.18V1C3.98585 0.734784 3.88025 0.48043 3.69227 0.292893C3.50429 0.105357 3.24934 0 2.98349 0C2.71765 0 2.4627 0.105357 2.27472 0.292893C2.08674 0.48043 1.98114 0.734784 1.98114 1V4.18C1.40062 4.3902 0.899052 4.77363 0.544599 5.27817C0.190147 5.7827 0 6.38388 0 7C0 7.61612 0.190147 8.2173 0.544599 8.72184C0.899052 9.22637 1.40062 9.6098 1.98114 9.82V19C1.98114 19.2652 2.08674 19.5196 2.27472 19.7071C2.4627 19.8946 2.71765 20 2.98349 20C3.24934 20 3.50429 19.8946 3.69227 19.7071C3.88025 19.5196 3.98585 19.2652 3.98585 19V9.82C4.56637 9.6098 5.06794 9.22637 5.42239 8.72184C5.77684 8.2173 5.96699 7.61612 5.96699 7C5.96699 6.38388 5.77684 5.7827 5.42239 5.27817C5.06794 4.77363 4.56637 4.3902 3.98585 4.18ZM2.98349 8C2.78525 8 2.59145 7.94135 2.42661 7.83147C2.26178 7.72159 2.1333 7.56541 2.05744 7.38268C1.98157 7.19996 1.96172 6.99889 2.0004 6.80491C2.03907 6.61093 2.13454 6.43275 2.27472 6.29289C2.4149 6.15304 2.59351 6.0578 2.78794 6.01921C2.98238 5.98063 3.18392 6.00043 3.36708 6.07612C3.55024 6.15181 3.70678 6.27998 3.81692 6.44443C3.92707 6.60888 3.98585 6.80222 3.98585 7C3.98585 7.26522 3.88025 7.51957 3.69227 7.70711C3.50429 7.89464 3.24934 8 2.98349 8Z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setOpenPopUpDelete(true)}
+              className="rounded-full shadow-md shadow-[#3F7AFF] bg-[#4880FF] fill-white py-3 px-2 duration-300 hover:shadow-[#D5D5D5] border border-[#4880FF] hover:border-[#D5D5D5] hover:fill-[#EA0234] hover:bg-white"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 306 398"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M284.2 142.088L277.8 335.8C277.255 352.39 270.266 368.115 258.317 379.637C246.368 391.159 230.399 397.571 213.8 397.512H92.2C75.6116 397.571 59.6521 391.168 47.7047 379.66C35.7574 368.152 28.7614 352.443 28.2 335.864L21.8 142.088C21.66 137.845 23.2114 133.719 26.1129 130.62C29.0145 127.52 33.0285 125.7 37.272 125.56C41.5155 125.42 45.6408 126.971 48.7404 129.873C51.84 132.774 53.66 136.789 53.8 141.032L60.2 334.792C60.5187 343.064 64.0303 350.89 69.9973 356.627C75.9642 362.364 83.9223 365.566 92.2 365.56H213.8C222.088 365.566 230.056 362.355 236.024 356.604C241.993 350.853 245.497 343.011 245.8 334.728L252.2 141.032C252.34 136.789 254.16 132.774 257.26 129.873C260.359 126.971 264.485 125.42 268.728 125.56C272.971 125.7 276.985 127.52 279.887 130.62C282.789 133.719 284.34 137.845 284.2 142.088ZM305.368 77.624C305.368 81.8675 303.682 85.9371 300.682 88.9377C297.681 91.9383 293.611 93.624 289.368 93.624H16.648C12.4045 93.624 8.33487 91.9383 5.33429 88.9377C2.33371 85.9371 0.648003 81.8675 0.648003 77.624C0.648003 73.3805 2.33371 69.3109 5.33429 66.3103C8.33487 63.3097 12.4045 61.624 16.648 61.624H66.248C71.3176 61.6377 76.2109 59.7647 79.9757 56.3695C83.7405 52.9744 86.1075 48.3 86.616 43.256C87.7967 31.4238 93.3402 20.4549 102.166 12.4865C110.992 4.51814 122.469 0.121063 134.36 0.151999H171.64C183.531 0.121063 195.008 4.51814 203.834 12.4865C212.66 20.4549 218.203 31.4238 219.384 43.256C219.893 48.3 222.26 52.9744 226.024 56.3695C229.789 59.7647 234.682 61.6377 239.752 61.624H289.352C293.595 61.624 297.665 63.3097 300.666 66.3103C303.666 69.3109 305.352 73.3805 305.352 77.624H305.368ZM114.392 61.624H191.64C189.537 56.8199 188.162 51.7293 187.56 46.52C187.164 42.5761 185.317 38.9198 182.379 36.2594C179.441 33.599 175.62 32.1239 171.656 32.12H134.376C130.412 32.1239 126.591 33.599 123.653 36.2594C120.715 38.9198 118.868 42.5761 118.472 46.52C117.865 51.7302 116.5 56.8207 114.392 61.624ZM130.504 304.04V167.8C130.504 163.557 128.818 159.487 125.818 156.486C122.817 153.486 118.747 151.8 114.504 151.8C110.261 151.8 106.191 153.486 103.19 156.486C100.19 159.487 98.504 163.557 98.504 167.8V304.104C98.504 308.347 100.19 312.417 103.19 315.418C106.191 318.418 110.261 320.104 114.504 320.104C118.747 320.104 122.817 318.418 125.818 315.418C128.818 312.417 130.504 308.347 130.504 304.104V304.04ZM207.528 304.04V167.8C207.528 163.557 205.842 159.487 202.842 156.486C199.841 153.486 195.771 151.8 191.528 151.8C187.285 151.8 183.215 153.486 180.214 156.486C177.214 159.487 175.528 163.557 175.528 167.8V304.104C175.528 308.347 177.214 312.417 180.214 315.418C183.215 318.418 187.285 320.104 191.528 320.104C195.771 320.104 199.841 318.418 202.842 315.418C205.842 312.417 207.528 308.347 207.528 304.104V304.04Z" />
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr className="border-t">
+        {showNestedTable && (
+          <>
+            <td></td>
+            <td>
+              <p className="p-[20px] max-w-[200px] mx-auto break-words">{teacher.String}</p>
+            </td>
+            <td>
+              <p className="p-[20px] max-w-[200px] mx-auto break-words">с {formattedDate}</p>
+            </td>
+            <td>
+              <p className="p-[20px] max-w-[200px] mx-auto break-words">по {formattedDate1}</p>
+            </td>
+          </>
+        )}
+      </tr>
+    </tbody>
+  );
+};
