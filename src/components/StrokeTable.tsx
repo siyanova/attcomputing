@@ -96,6 +96,10 @@ export const StrokeTable = ({
 
   const formattedDate1: string = dateObject1.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit'});
   const formattedDate: string = dateObject.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' ,year: '2-digit' });
+
+  const maxStroke = async()=>{
+    
+  }
   const handleDeleteStroke = async () => {
     try {
       const response = await axios.delete(
