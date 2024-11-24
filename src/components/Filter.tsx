@@ -5,10 +5,41 @@ import path from "../../public/Path.svg";
 import React from "react";
 import { useState } from "react";
 import Button from "@/components/Button";
-
- 
+import { Modal } from "@mui/material";
+import PopUpAddApp from "@/components/PopUpAddApp";
+type TableAppl = {
+  ID: string;
+  Name: {
+    String: string;
+    Valid: boolean;
+  };
+  Engineer: {
+    Int64: number;
+    Valid: boolean;
+  };
+  Cabinet: {
+    String: string;
+    Valid: boolean;
+  };
+  Status: {
+    String: string;
+    Valid: boolean;
+  };
+  Teacher: {
+    String: string;
+    Valid: boolean;
+  };
+  StartDate: string;
+  EndDate: {
+    Time: string;
+    Valid: boolean;
+  };
+};
 
 export const Filter = () => {
+  const [tableAppl, setTableAppl] = useState<TableAppl[]>([]);
+  const [PopUpAddApp, setOpenPopUpAddApp] = useState(false);
+
   const [date, setDate] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,8 +58,24 @@ export const Filter = () => {
     setShowStatus(!showStatus);
   };
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [popUpAddApp, setPopUpAddApp] = useState(false);
+  
   return (
     <div className="p-[20px] 2xl:max-w-[1240px] 2xl:mx-auto flex-col items-start flex w-full">
+      {/* <Modal
+        open={popUpAddApp}
+        onClose={() => setPopUpAddApp(false)}
+        closeAfterTransition
+        disableEnforceFocus
+        className="flex justify-center items-center"
+      >
+        <PopUpAddApp
+          setPopUp={setPopUpAddApp}
+          title="Добавить заявку"
+          strokeTable={tableAppl}
+          setStrokeTable={setTableAppl}
+        />
+      </Modal> */}
       <h1 className="text-[32px] text-[#013970] font-bold mt-[25px]">
         Список Заявок
       </h1>
@@ -129,10 +176,6 @@ export const Filter = () => {
           </button>
         </div>
       </div>
-      <Button
-        text="Добавить заявку"
-        className=" px-[30px] text-[14px] mt-[20px]"
-      />
     </div>
   );
 };

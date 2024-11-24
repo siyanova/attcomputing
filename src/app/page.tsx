@@ -7,7 +7,9 @@ import Image from "next/image";
 import PathStart from "../../public/PathStart.svg";
 import PathEnd from "../../public/PathEnd.svg";
 import { StrokeTable } from "@/components/StrokeTable";
-
+import { Modal } from "@mui/material";
+import PopUpAddApp from "@/components/PopUpAddApp";
+import Button from "@/components/Button";
 
 type TableAppl = {
   ID: string;
@@ -42,6 +44,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [tableAppl, setTableAppl] = useState<TableAppl[]>([]);
   const [refresh, setRefresh] = useState(false);
+
+  const [popUpAddApp, setPopUpAddApp] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     axios
@@ -63,41 +68,63 @@ export default function Home() {
 
   return (
     <Bg>
+      <Modal
+        open={popUpAddApp}
+        onClose={() => setPopUpAddApp(false)}
+        closeAfterTransition
+        disableEnforceFocus
+        className="flex justify-center items-center"
+      >
+        <PopUpAddApp
+          setPopUp={setPopUpAddApp}
+          title="Добавить заявку"
+          strokeTable={tableAppl}
+          setStrokeTable={setTableAppl}
+        />
+      </Modal>
       <div className="flex flex-col  w-full">
         <Filter />
       </div>
+
       <div className="text-[14px] h-screen w-full flex flex-col 2xl:items-center p-[20px] text-center">
-        <table className="table-fixed bg-white border-collapse  rounded-lg">
-          <thead className="font-bold bg-[#D5D5D5] bg-opacity-10">
-            <tr>
-              <th className="max-w-[80px] py-[15px] px-[15px]">ID</th>
-              <th className="w-[130px] py-[15px] px-[100px]">НАИМЕНОВАНИЕ</th>
-              <th className="w-[130px] py-[15px] px-[80px]">ИНЖЕНЕР</th>
-              <th className="w-[130px] py-[15px] px-[80px]">КАБИНЕТ</th>
-              <th className="w-[130px] py-[15px] px-[80px]">СТАТУС</th>
-              <th className="py-[15px] px-[50px]"></th>
-            </tr>
-          </thead>
-          {loading || !tableAppl ? (
-            <></>
-          ) : (
-            tableAppl.map((items, index) => (
-              <StrokeTable
-                key={index}
-                id={items.ID}
-                name={items.Description}
-                engeneer={items.IDEngineer}
-                office={items.Cabinet}
-                status={items.Status}
-                teacher={items.NameTeacher}
-                startDate={items.StartDate}
-                endDate = {items.EndDate}
-                tableAppl={tableAppl}
-                setTableAppl={setTableAppl}
-              />
-            ))
-          )}
-        </table>
+        <div>
+          <Button
+            text="Добавить заявку"
+            className=" px-[30px] mb-[20px] flex text-[14px]"
+            onClick={() => setPopUpAddApp(true)}
+          />
+          <table className="table-fixed bg-white border-collapse  rounded-lg">
+            <thead className="font-bold bg-[#D5D5D5] bg-opacity-10">
+              <tr>
+                <th className="max-w-[80px] py-[15px] px-[15px]">ID</th>
+                <th className="w-[130px] py-[15px] px-[100px]">НАИМЕНОВАНИЕ</th>
+                <th className="w-[130px] py-[15px] px-[80px]">ИНЖЕНЕР</th>
+                <th className="w-[130px] py-[15px] px-[80px]">КАБИНЕТ</th>
+                <th className="w-[130px] py-[15px] px-[80px]">СТАТУС</th>
+                <th className="py-[15px] px-[50px]"></th>
+              </tr>
+            </thead>
+            {loading || !tableAppl ? (
+              <></>
+            ) : (
+              tableAppl.map((items, index) => (
+                <StrokeTable
+                  key={index}
+                  id={items.ID}
+                  name={items.Description}
+                  engeneer={items.IDEngineer}
+                  office={items.Cabinet}
+                  status={items.Status}
+                  teacher={items.NameTeacher}
+                  startDate={items.StartDate}
+                  endDate={items.EndDate}
+                  tableAppl={tableAppl}
+                  setTableAppl={setTableAppl}
+                />
+              ))
+            )}
+          </table>
+        </div>
         <div className="flex bg-white fixed bottom-0 right-0 justify-center m-5 p-2  gap-2 w-[60px]  border rounded-lg">
           <button>
             <Image src={PathStart} alt="path" />
