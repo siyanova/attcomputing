@@ -43,13 +43,13 @@ type Props = {
   setStrokeTable: Dispatch<SetStateAction<StrokeTable[]>>;
 };
 type StrokeTableRequest = {
-  name: string;
+  description: string;
   engineer: number;
   cabinet: string;
   status: string;
   teacher: string;
-  startTime: string;
-  endTime: string;
+  startDate: string;
+  endDate: string;
 };
 const PopUpAddApp = ({
   setPopUp,
@@ -86,13 +86,13 @@ const PopUpAddApp = ({
 
         const newStroke: StrokeTable = {
           ID: (lastId + 1).toString(),
-          Description: { Valid: true, String: formData.name },
+          Description: { Valid: true, String: formData.description },
           IDEngineer: { Valid: true, Int64: formData.engineer },
           Cabinet: { Valid: true, String: formData.cabinet },
           Status: { Valid: true, String: formData.status },
           NameTeacher: { Valid: true, String: formData.teacher },
-          StartDate: formData.startTime,
-          EndDate: { Valid: true, Time: formData.endTime },
+          StartDate: formData.startDate,
+          EndDate: { Valid: true, Time: formData.endDate },
         };
 
         setStrokeTable((strokeTable) => [...strokeTable, newStroke]);
@@ -120,86 +120,78 @@ const PopUpAddApp = ({
         onSubmit={handleSubmit(handleAddTable)}
         className="flex flex-col gap-4"
       >
-        <div className="flex gap-10">
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-              <p className="text-[18px]">Название :</p>
-              <input
-                {...register("name")}
-                type="text"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder="Обновить антивирус"
-              />
-              <p className="text-sm text-red-500">{errors.name?.message}</p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="text-[18px]">Инженер :</p>
-              <input
-                {...register("engineer")}
-                type="text"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder="Иванов В.В"
-              />
-              <p className="text-sm text-red-500">{errors.engineer?.message}</p>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <p className="text-[18px]">Кабинет :</p>
-              <input
-                {...register("cabinet")}
-                type="text"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder="3212"
-              />
-              <p className="text-sm text-red-500">{errors.cabinet?.message}</p>
-            </div>
+        <div className="flex gap-10 flex-wrap">
+          <div className="flex flex-col gap-2">
+            <p className="text-[18px]">Название :</p>
+            <input
+              {...register("description")}
+              type="text"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="Название задачи"
+            />
+            <p className="text-sm text-red-500">{errors.description?.message}</p>
           </div>
-          <div className="flex flex-col  gap-3">
-            <div className="flex flex-col gap-2">
-              <p className="text-[18px]">Статус :</p>
-              <input
-                {...register("status")}
-                type="text"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder="Выполнено"
-              />
-              <p className="text-sm text-red-500">{errors.status?.message}</p>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <p className="text-[18px]">Преподаватель :</p>
-              <input
-                {...register("teacher")}
-                type="text"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder="Крылов Д.Л."
-              />
-              <p className="text-sm text-red-500">{errors.teacher?.message}</p>
-            </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[18px]">Инженер :</p>
+            <input
+              {...register("engineer")}
+              type="text"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="Иванов В.В"
+            />
+            <p className="text-sm text-red-500">{errors.engineer?.message}</p>
           </div>
-          <div className="flex flex-col  gap-3">
-            <div className="flex flex-col gap-2">
-              <p className="text-[18px]">Дата поступления заявки:</p>
-              <input
-                {...register("startTime")}
-                type="text"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder="12.12.2024"
-              />
-              <p className="text-sm text-red-500">
-                {errors.startTime?.message}
-              </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="text-[18px]">Дата закрытия заявки: :</p>
-              <input
-                {...register("endTime")}
-                type="text"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                placeholder="13.12.2024"
-              />
-              <p className="text-sm text-red-500">{errors.endTime?.message}</p>
-            </div>
+
+          <div className="flex flex-col gap-2">
+            <p className="text-[18px]">Кабинет :</p>
+            <input
+              {...register("cabinet")}
+              type="text"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="3212"
+            />
+            <p className="text-sm text-red-500">{errors.cabinet?.message}</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[18px]">Статус :</p>
+            <input
+              {...register("status")}
+              type="text"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="Выполнено"
+            />
+            <p className="text-sm text-red-500">{errors.status?.message}</p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <p className="text-[18px]">Преподаватель :</p>
+            <input
+              {...register("teacher")}
+              type="text"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="Крылов Д.Л."
+            />
+            <p className="text-sm text-red-500">{errors.teacher?.message}</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[18px]">Дата поступления заявки:</p>
+            <input
+              {...register("startDate")}
+              type="text"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="2024-12-30"
+            />
+            <p className="text-sm text-red-500">{errors.startDate?.message}</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[18px]">Дата закрытия заявки: :</p>
+            <input
+              {...register("endDate")}
+              type="text"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="2024-12-30"
+            />
+            <p className="text-sm text-red-500">{errors.endDate?.message}</p>
           </div>
         </div>
         <Button text="Добавить" />

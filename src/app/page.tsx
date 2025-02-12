@@ -44,6 +44,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [tableAppl, setTableAppl] = useState<TableAppl[]>([]);
   const [refresh, setRefresh] = useState(false);
+  console.log(tableAppl);
 
   const [popUpAddApp, setPopUpAddApp] = useState(false);
 
@@ -56,7 +57,7 @@ export default function Home() {
         },
       })
       .then((response) => {
-        console.log("Данные", response.data), setTableAppl(response.data);
+        setTableAppl(response.data);
       })
       .catch((error) => {
         console.log("Ошибка выполнения запроса: ", error);

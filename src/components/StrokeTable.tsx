@@ -93,7 +93,7 @@ export const StrokeTable = ({
   };
   const dateObject: Date = new Date(startDate);
   const dateObject1: Date = new Date(endDate.Time);
-
+  console.log(endDate)
   const formattedDate1: string = dateObject1.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit'});
   const formattedDate: string = dateObject.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' ,year: '2-digit' });
 
@@ -226,7 +226,7 @@ export const StrokeTable = ({
               <p className="p-[20px] max-w-[200px] mx-auto break-words">с {formattedDate}</p>
             </td>
             <td>
-              <p className="p-[20px] max-w-[200px] mx-auto break-words">по {formattedDate1}</p>
+              <p className="p-[20px] max-w-[200px] mx-auto break-words">по {formattedDate1 ? formattedDate1 : 'Не назначено'}</p>
             </td>
           </>
         )}
