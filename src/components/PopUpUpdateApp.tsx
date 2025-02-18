@@ -83,7 +83,6 @@ type Engineer = {
   ID: string;
   Name: string;
   Email: string;
-  TelegramID: string;
 };
 
 const PopUpUpdateApp = ({
@@ -116,7 +115,7 @@ const PopUpUpdateApp = ({
   });
 
   const engineersSelect: Engineer[] = [
-    { ID: "0", Name: "Выберите инженера", Email: "", TelegramID: "" },
+    { ID: "0", Name: "Выберите инженера", Email: "" },
     ...engineers,
   ];
 

@@ -10,7 +10,6 @@ type Engineer = {
   ID: string;
   Name: string;
   Email: string;
-  TelegramID: string;
 };
 
 type Props = {
@@ -69,7 +68,7 @@ export const Filter = ({
   };
 
   const engineersSelect: Engineer[] = [
-    { ID: "0", Name: "Выберите инженера", Email: "", TelegramID: "" },
+    { ID: "0", Name: "Выберите инженера", Email: "" },
     ...engineers,
   ];
 

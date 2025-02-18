@@ -6,5 +6,4 @@ export const engineerFromSchema = z.object({
     .string()
     .email("Некорректный email")
     .min(1, "Поле не должно быть пустым"),
-  telegramId: z.string().length(9, "TelegramID должен содержать ровно 9 символов"),
 });

@@ -50,7 +50,6 @@ type Engineer = {
   ID: string;
   Name: string;
   Email: string;
-  TelegramID: string;
 };
 
 type Props = {
@@ -77,7 +76,7 @@ const PopUpAddApp = ({
   });
 
   const engineersSelect: Engineer[] = [
-    { ID: "", Name: "Выберите инженера", Email: "", TelegramID: "" },
+    { ID: "", Name: "Выберите инженера", Email: ""},
     ...engineers,
   ];
 

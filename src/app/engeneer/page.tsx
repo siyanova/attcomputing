@@ -12,7 +12,7 @@ type Engineer = {
   ID: string;
   Name: string;
   Email: string;
-  TelegramID: string;
+
 };
 
 export default function EngeneersPage() {
@@ -78,7 +78,6 @@ export default function EngeneersPage() {
                 id={items.ID}
                 name={items.Name}
                 email={items.Email}
-                telegramId={items.TelegramID}
                 engineers={engineers}
                 setEngineers={setEngineers}
               />

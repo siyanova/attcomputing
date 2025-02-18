@@ -44,7 +44,6 @@ type Engineer = {
   ID: string;
   Name: string;
   Email: string;
-  TelegramID: string;
 };
 
 export default function Home() {

@@ -11,7 +11,6 @@ type Engineer = {
   ID: string;
   Name: string;
   Email: string;
-  TelegramID: string;
 };
 
 type Props = {
@@ -24,7 +23,6 @@ type Props = {
 type EngineerRequest = {
   name: string;
   email: string;
-  telegramId: string;
 };
 
 const PopUpUpdateEngineer = ({
@@ -36,7 +34,6 @@ const PopUpUpdateEngineer = ({
   const engineerDefault: EngineerRequest = {
     name: lastEngineer.Name,
     email: lastEngineer.Email,
-    telegramId: lastEngineer.TelegramID,
   };
   const {
     handleSubmit,
@@ -53,7 +50,6 @@ const PopUpUpdateEngineer = ({
       ID: lastEngineer.ID,
       Name: formData.name,
       Email: formData.email,
-      TelegramID: formData.telegramId,
     };
     try {
       const response = await axios.put(
@@ -117,17 +113,6 @@ const PopUpUpdateEngineer = ({
             placeholder="esteban_schiller@att.ru"
           />
           <p className="text-sm text-red-500">{errors.email?.message}</p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <p className="text-[18px]">TelegramID :</p>
-          <input
-            {...register("telegramId")}
-            type="number"
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-            placeholder="12332131"
-            maxLength={9}
-          />
-          <p className="text-sm text-red-500">{errors.telegramId?.message}</p>
         </div>
         <Button text="Обновить" />
       </form>

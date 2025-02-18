@@ -12,19 +12,17 @@ type Engineer = {
   ID: string;
   Name: string;
   Email: string;
-  TelegramID: string;
 };
 
 type Props = {
   id: string;
   name: string;
   email: string;
-  telegramId: string;
   engineers: Engineer[];
   setEngineers: Dispatch<SetStateAction<Engineer[]>>;
 };
 
-const Engeneer = ({ id, name, email, telegramId, setEngineers }: Props) => {
+const Engeneer = ({ id, name, email, setEngineers }: Props) => {
   const [openPopUpDelete, setOpenPopUpDelete] = useState(false);
   const [openPopUpUpdate, setOpenPopUpUpdape] = useState(false);
 
@@ -32,7 +30,6 @@ const Engeneer = ({ id, name, email, telegramId, setEngineers }: Props) => {
     ID: id,
     Name: name,
     Email: email,
-    TelegramID: telegramId,
   };
 
   const handleDeleteEngineer = async () => {
@@ -100,10 +97,6 @@ const Engeneer = ({ id, name, email, telegramId, setEngineers }: Props) => {
         <div className="flex text-[14px] px-5 justify-center gap-2 flex-row text-[14px] opacity-60">
           <Image src={"/message.svg"} width={14} height={14} alt="message" />
           <p className="text-[14px] opacity-60">{email}</p>
-        </div>
-        <div className="flex text-[14px] justify-center gap-2 flex-row text-[14px] opacity-60">
-          <p>Tg:</p>
-          <p>{telegramId}</p>
         </div>
       </div>
       <div className="flex gap-2 justify-end  w-full px-5">
