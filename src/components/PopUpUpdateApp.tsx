@@ -37,6 +37,39 @@ type StrokeTable = {
 };
 
 type StrokeTableRequest = {
+  id: string;
+  description: {
+    String: string;
+    Valid: boolean;
+  };
+  engineer: {
+    String: number;
+    Valid: boolean;
+  };
+  cabinet: {
+    String: string;
+    Valid: boolean;
+  };
+  status: {
+    String: string;
+    Valid: boolean;
+  };
+  teacher: {
+    String: string;
+    Valid: boolean;
+  };
+  startDate: string;
+  endDate: string;
+};
+
+type Props = {
+  setPopUp: (value: SetStateAction<boolean>) => void;
+  title: string;
+  setStrokeTable: Dispatch<SetStateAction<StrokeTable[]>>;
+  lastStrokeTable: StrokeTable;
+  engineers: Engineer[];
+};
+type StrokeTableDefault = {
   description: string;
   engineer: number;
   cabinet: string;
@@ -53,41 +86,61 @@ type Engineer = {
   TelegramID: string;
 };
 
-type Props = {
-  setPopUp: (value: SetStateAction<boolean>) => void;
-  title: string;
-  strokeTable: StrokeTable[];
-  setStrokeTable: Dispatch<SetStateAction<StrokeTable[]>>;
-  engineers: Engineer[];
-};
-
-const PopUpAddApp = ({
+const PopUpUpdateApp = ({
   setPopUp,
   title,
-  strokeTable,
   setStrokeTable,
+  lastStrokeTable,
   engineers,
 }: Props) => {
+  const appDefault: StrokeTableDefault = {
+    description: lastStrokeTable.Description.String,
+    engineer: lastStrokeTable.IDEngineer.Int64,
+    cabinet: lastStrokeTable.Cabinet.String,
+    status: lastStrokeTable.Status.String,
+    teacher: lastStrokeTable.NameTeacher.String,
+    startDate: lastStrokeTable.StartDate.split("T")[0],
+    endDate:
+      lastStrokeTable.EndDate.Time === "0001-01-01T00:00:00Z"
+        ? ""
+        : lastStrokeTable.EndDate.Time.split("T")[0],
+  };
+
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<StrokeTableRequest>({
+  } = useForm<StrokeTableDefault>({
     resolver: zodResolver(StrokeTableFromSchema),
+    defaultValues: appDefault,
   });
 
   const engineersSelect: Engineer[] = [
-    { ID: "", Name: "Выберите инженера", Email: "", TelegramID: "" },
+    { ID: "0", Name: "Выберите инженера", Email: "", TelegramID: "" },
     ...engineers,
   ];
 
   const status = ["Не назначено", "Выполнено", "Отклонено", "В процессе"];
 
-  const handleAddTable = async (formData: StrokeTableRequest) => {
+  const handleUpdateTable = async (formData: StrokeTableDefault) => {
+    const newFormData: StrokeTableRequest = {
+      id: lastStrokeTable.ID.toString(),
+      description: { String: formData.description, Valid: true },
+      engineer: {
+        String: formData.engineer,
+        Valid: formData.engineer != 0 ? true : false,
+      },
+      cabinet: { String: formData.cabinet, Valid: true },
+      status: { String: formData.status, Valid: true },
+      teacher: { String: formData.teacher, Valid: true },
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+    };
     try {
-      const response = await axios.post(
-        `http://localhost:5050/addApplication`,
-        formData,
+      console.log("lastStrokeTable.ID перед отправкой:", newFormData.id);
+      const response = await axios.put(
+        `http://localhost:5050/updateApplication`,
+        newFormData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -97,26 +150,19 @@ const PopUpAddApp = ({
       );
 
       if (response.status === 200 || response.status === 201) {
-        const lastId =
-          strokeTable.length > 0
-            ? Math.max(...strokeTable.map((e) => parseInt(e.ID)))
-            : 0;
-
         const newStroke: StrokeTable = {
-          ID: (lastId + 1).toString(),
+          ID: lastStrokeTable.ID,
           Description: { Valid: true, String: formData.description },
-          IDEngineer: {
-            Valid: formData.engineer != 0 ? true : false,
-            Int64: formData.engineer,
-          },
+          IDEngineer: { Valid: true, Int64: formData.engineer },
           Cabinet: { Valid: true, String: formData.cabinet },
           Status: { Valid: true, String: formData.status },
           NameTeacher: { Valid: true, String: formData.teacher },
           StartDate: formData.startDate,
           EndDate: { Valid: true, Time: formData.endDate },
         };
-
-        setStrokeTable((strokeTable) => [...strokeTable, newStroke]);
+        setStrokeTable((strokeTable) =>
+          strokeTable.map((app) => (app.ID === newStroke.ID ? newStroke : app))
+        );
         setPopUp(false);
       } else {
         throw new Error("Ошибка при добавлении инженера");
@@ -138,11 +184,11 @@ const PopUpAddApp = ({
         {title}
       </h2>
       <form
-        onSubmit={handleSubmit(handleAddTable)}
+        onSubmit={handleSubmit(handleUpdateTable)}
         className="flex flex-col gap-4"
       >
-        <div className="gap-10 grid grid-cols-2">
-          <div className="flex flex-col gap-2 justify-end">
+        <div className="flex gap-10 flex-wrap">
+          <div className="flex flex-col gap-2">
             <p className="text-[18px]">Название :</p>
             <input
               {...register("description")}
@@ -171,7 +217,7 @@ const PopUpAddApp = ({
             <p className="text-sm text-red-500">{errors.engineer?.message}</p>
           </div>
 
-          <div className="flex flex-col gap-2 justify-end">
+          <div className="flex flex-col gap-2">
             <p className="text-[18px]">Кабинет :</p>
             <input
               {...register("cabinet")}
@@ -198,7 +244,7 @@ const PopUpAddApp = ({
             <p className="text-sm text-red-500">{errors.status?.message}</p>
           </div>
 
-          <div className="flex flex-col gap-2 justify-end">
+          <div className="flex flex-col gap-2">
             <p className="text-[18px]">Преподаватель :</p>
             <input
               {...register("teacher")}
@@ -208,7 +254,7 @@ const PopUpAddApp = ({
             />
             <p className="text-sm text-red-500">{errors.teacher?.message}</p>
           </div>
-          <div className="flex flex-col gap-2 justify-end">
+          <div className="flex flex-col gap-2">
             <p className="text-[18px]">Дата поступления заявки:</p>
             <input
               {...register("startDate")}
@@ -221,7 +267,7 @@ const PopUpAddApp = ({
             />
             <p className="text-sm text-red-500">{errors.startDate?.message}</p>
           </div>
-          <div className="flex flex-col gap-2 justify-end">
+          <div className="flex flex-col gap-2">
             <p className="text-[18px]">Дата закрытия заявки: :</p>
             <input
               {...register("endDate")}
@@ -235,12 +281,12 @@ const PopUpAddApp = ({
             <p className="text-sm text-red-500">{errors.endDate?.message}</p>
           </div>
         </div>
-        <Button text="Добавить" />
+        <Button text="Обновить" />
       </form>
     </PopUpBg>
   );
 };
-export default PopUpAddApp;
+export default PopUpUpdateApp;
 
 const formatDate = (value: string): string => {
   let cleaned = value.replace(/\D/g, "");

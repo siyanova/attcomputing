@@ -46,6 +46,7 @@ const PopUpUpdateEngineer = ({
     resolver: zodResolver(engineerFromSchema),
     defaultValues: engineerDefault,
   });
+  
 
   const handleUpdateEngineer = async (formData: EngineerRequest) => {
     const newEngineer: Engineer = {
@@ -74,7 +75,7 @@ const PopUpUpdateEngineer = ({
         );
         setPopUp(false);
       } else {
-        throw new Error("Ошибка при добавлении инженера");
+        throw new Error("Ошибка при обновление инженера");
       }
     } catch (error) {
       console.error("Ошибка:", error);

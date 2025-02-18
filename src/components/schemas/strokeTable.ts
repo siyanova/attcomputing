@@ -9,13 +9,13 @@ export const StrokeTableFromSchema = z.object({
   status: z.string().min(1, "Поле не должно быть пустым"),
   teacher: z.string(),
   startDate: z.string().refine((value) => dateRegex.test(value), {
-    message: "Формат даты должен быть ДД.ММ.ГГГГ",
+    message: "Формат даты должен быть ГГГГ-ММ-ДД",
   }),
   endDate: z
   .string()
   .optional()
   .refine((value) => value === undefined || value === "" || dateRegex.test(value), {
-    message: "Формат даты должен быть ДД.ММ.ГГГГ или пустым",
+    message: "Формат даты должен быть ГГГГ-ММ-ДД или пустым",
   }),
 
 });

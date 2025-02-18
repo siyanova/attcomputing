@@ -40,12 +40,22 @@ type TableAppl = {
   };
 };
 
+type Engineer = {
+  ID: string;
+  Name: string;
+  Email: string;
+  TelegramID: string;
+};
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [tableAppl, setTableAppl] = useState<TableAppl[]>([]);
-  const [refresh, setRefresh] = useState(false);
-  console.log(tableAppl);
-
+  const [totalPages, setTotalPages] = useState(1);
+  const [paginationPage, setPaginationPage] = useState(1);
+  const [filterTeacher, setFilterTeacher] = useState("");
+  const [filterEngineer, setFilterEngineer] = useState("");
+  const [filterDate, setFilterDate] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [popUpAddApp, setPopUpAddApp] = useState(false);
 
   useEffect(() => {
@@ -55,9 +65,18 @@ export default function Home() {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
         },
+        params: {
+          page: paginationPage,
+          pageSize: 6,
+          nameTeacher: filterTeacher,
+          engineerID: filterEngineer,
+          orderDate: filterDate,
+          status: filterStatus,
+        },
       })
       .then((response) => {
-        setTableAppl(response.data);
+        setTableAppl(response.data.applications);
+        setTotalPages(response.data.totalPages);
       })
       .catch((error) => {
         console.log("Ошибка выполнения запроса: ", error);
@@ -65,7 +84,28 @@ export default function Home() {
       .finally(() => {
         setLoading(false);
       });
-  }, [refresh]);
+  }, [filterTeacher, filterDate, filterEngineer, filterStatus, paginationPage]);
+
+  const [engineers, setEngineers] = useState<Engineer[]>([]);
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("http://localhost:5050/getEngineers", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      })
+      .then((response) => {
+        setEngineers(response.data);
+      })
+      .catch((error) => {
+        console.error("Ошибка при выполнении запроса:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <Bg>
@@ -81,10 +121,17 @@ export default function Home() {
           title="Добавить заявку"
           strokeTable={tableAppl}
           setStrokeTable={setTableAppl}
+          engineers={engineers}
         />
       </Modal>
       <div className="flex flex-col  w-full">
-        <Filter />
+        <Filter
+          setFilterDate={setFilterDate}
+          setFilterEngineer={setFilterEngineer}
+          setFilterStatus={setFilterStatus}
+          setFilterTeacher={setFilterTeacher}
+          engineers={engineers}
+        />
       </div>
 
       <div className="text-[14px] h-screen w-full flex flex-col 2xl:items-center p-[20px] text-center">
@@ -121,18 +168,29 @@ export default function Home() {
                   endDate={items.EndDate}
                   tableAppl={tableAppl}
                   setTableAppl={setTableAppl}
+                  engineers={engineers}
                 />
               ))
             )}
           </table>
         </div>
-        <div className="flex bg-white fixed bottom-0 right-0 justify-center m-5 p-2  gap-2 w-[60px]  border rounded-lg">
-          <button>
-            <Image src={PathStart} alt="path" />
+
+        {/* 🔹 Блок пагинации */}
+        <div className="flex bg-white fixed bottom-0 right-0 justify-center m-5 p-2 gap-2 w-auto border rounded-lg">
+          <button
+            onClick={() => setPaginationPage((prev) => Math.max(prev - 1, 1))}
+            disabled={paginationPage === 1}
+            className={`p-2 ${paginationPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            <Image src={PathStart} alt="Назад" />
           </button>
-          <div className="border"></div>
-          <button>
-            <Image src={PathEnd} alt="path" />
+          <span className="py-2 px-4">Страница {paginationPage} из {totalPages}</span>
+          <button
+            onClick={() => setPaginationPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={paginationPage === totalPages}
+            className={`p-2 ${paginationPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            <Image src={PathEnd} alt="Вперед" />
           </button>
         </div>
       </div>

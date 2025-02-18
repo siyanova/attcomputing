@@ -19,7 +19,6 @@ export default function EngeneersPage() {
   const [loading, setLoading] = useState(false);
   const [engineers, setEngineers] = useState<Engineer[]>([]);
   const [popUpAddEngineer, setPopUpAddEngineer] = useState(false);
-  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -39,7 +38,7 @@ export default function EngeneersPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [refresh]);
+  }, []);
 
   return (
     <Bg>

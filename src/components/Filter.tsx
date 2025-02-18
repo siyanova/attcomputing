@@ -2,80 +2,93 @@
 import Image from "next/image";
 import filter from "../../public/filter.svg";
 import path from "../../public/Path.svg";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import Button from "@/components/Button";
-import { Modal } from "@mui/material";
-import PopUpAddApp from "@/components/PopUpAddApp";
-type TableAppl = {
+
+type Engineer = {
   ID: string;
-  Name: {
-    String: string;
-    Valid: boolean;
-  };
-  Engineer: {
-    Int64: number;
-    Valid: boolean;
-  };
-  Cabinet: {
-    String: string;
-    Valid: boolean;
-  };
-  Status: {
-    String: string;
-    Valid: boolean;
-  };
-  Teacher: {
-    String: string;
-    Valid: boolean;
-  };
-  StartDate: string;
-  EndDate: {
-    Time: string;
-    Valid: boolean;
-  };
+  Name: string;
+  Email: string;
+  TelegramID: string;
 };
 
-export const Filter = () => {
-  const [tableAppl, setTableAppl] = useState<TableAppl[]>([]);
-  const [PopUpAddApp, setOpenPopUpAddApp] = useState(false);
+type Props = {
+  setFilterTeacher: Dispatch<SetStateAction<string>>;
+  setFilterEngineer: Dispatch<SetStateAction<string>>;
+  setFilterDate: Dispatch<SetStateAction<string>>;
+  setFilterStatus: Dispatch<SetStateAction<string>>;
+  engineers: Engineer[];
+};
 
+export const Filter = ({
+  setFilterTeacher,
+  setFilterDate,
+  setFilterEngineer,
+  setFilterStatus,
+  engineers,
+}: Props) => {
   const [date, setDate] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value;
-    if (inputValue.length <= 8) {
-      if (/^\d{2}$/.test(inputValue)) {
-        e.target.value = inputValue + "/";
-      } else if (/^\d{2}\/\d{2}$/.test(inputValue)) {
-        e.target.value = inputValue + "/";
+  const formatDate = (value: string): string => {
+    let cleaned = value.replace(/\D/g, "");
+
+    if (cleaned.length > 8) cleaned = cleaned.slice(0, 8);
+
+    let formatted = "";
+    if (cleaned.length > 4) {
+      formatted = cleaned.slice(0, 4) + "-";
+      if (cleaned.length > 6) {
+        formatted += cleaned.slice(4, 6) + "-" + cleaned.slice(6);
+      } else {
+        formatted += cleaned.slice(4);
       }
-      setDate(e.target.value);
+    } else {
+      formatted = cleaned;
     }
+
+    return formatted;
   };
-  const [showStatus, setShowStatus] = useState(false);
-  const toggleStatus = () => {
-    setShowStatus(!showStatus);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setDate(formatDate(newValue));
   };
+
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [popUpAddApp, setPopUpAddApp] = useState(false);
-  
+  const [activeStatus, setActiveStatus] = useState("");
+  const [activeFilterTeacher, setActiveFilterTeacher] = useState("");
+  const [activeFilterEngineer, setActiveFilterEngineer] = useState("");
+
+  const handleAddFiltration = () => {
+    setFilterDate(date);
+    setFilterTeacher(activeFilterTeacher);
+    setFilterEngineer(activeFilterEngineer != "0" ? activeFilterEngineer : "");
+    setFilterStatus(activeStatus);
+    setPopupOpen(false)
+  };
+
+  const engineersSelect: Engineer[] = [
+    { ID: "0", Name: "Выберите инженера", Email: "", TelegramID: "" },
+    ...engineers,
+  ];
+
+  const handleDeleteFiltration = () => {
+    setDate("");
+    setActiveStatus("");
+    setActiveFilterTeacher("");
+    setActiveFilterEngineer("");
+    //фильтрация
+    setFilterDate("");
+    setFilterTeacher("");
+    setFilterEngineer("");
+    setFilterStatus("");
+
+    setPopupOpen(false)
+  };
+
   return (
     <div className="p-[20px] 2xl:max-w-[1240px] 2xl:mx-auto flex-col items-start flex w-full">
-      {/* <Modal
-        open={popUpAddApp}
-        onClose={() => setPopUpAddApp(false)}
-        closeAfterTransition
-        disableEnforceFocus
-        className="flex justify-center items-center"
-      >
-        <PopUpAddApp
-          setPopUp={setPopUpAddApp}
-          title="Добавить заявку"
-          strokeTable={tableAppl}
-          setStrokeTable={setTableAppl}
-        />
-      </Modal> */}
       <h1 className="text-[32px] text-[#013970] font-bold mt-[25px]">
         Список Заявок
       </h1>
@@ -93,7 +106,7 @@ export const Filter = () => {
               <td>
                 <input
                   className="px-[23px] py-[10px] w-full rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-                  placeholder="Дата"
+                  placeholder="Дата старта"
                   value={date}
                   onChange={handleChange}
                 />
@@ -102,31 +115,41 @@ export const Filter = () => {
                 <input
                   placeholder="Преподаватель"
                   className="flex px-[23px] py-[10px] w-full rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 items-center gap-[6px]"
+                  onChange={(event) =>
+                    setActiveFilterTeacher(event.target.value)
+                  }
                 ></input>
+              </td>
+              <td>
+                <select
+                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 bg-white h-[42px]"
+                  onChange={(e) => setActiveFilterEngineer(e.target.value)}
+                >
+                  {engineersSelect.map((item, index) => {
+                    return (
+                      <option value={item.ID} key={index}>
+                        {item.Name}
+                      </option>
+                    );
+                  })}
+                </select>
               </td>
               <td>
                 <div className="relative">
                   <button
                     onClick={() => {
                       setPopupOpen(!isPopupOpen);
-                      toggleStatus();
                     }}
                     className=" flex px-[23px] py-[10px] items-center gap-[6px]"
                   >
                     <p>Статус заявки</p>
-                    {showStatus ? (
-                      <Image
-                        src={path}
-                        alt="Path"
-                        className="transform rotate-180 transition-transform duration-500"
-                      />
-                    ) : (
-                      <Image
-                        src={path}
-                        alt="Path"
-                        className=" transition-transform duration-500 "
-                      />
-                    )}
+                    <Image
+                      src={path}
+                      alt="Path"
+                      className={`transform transition-transform duration-300 ${
+                        isPopupOpen ? "rotate-0" : "rotate-180"
+                      }`}
+                    />
                   </button>
                   <div
                     className={`absolute ${
@@ -138,21 +161,65 @@ export const Filter = () => {
                         Выберите статус заявки
                       </p>
                       <div className="flex flex-row flex-wrap font-bold gap-[15px] ">
-                        <button className="p-3 border rounded-3xl w-[147px] text-left hover:text-[#00B69B] hover:bg-[#00B69B] hover:bg-opacity-20">
+                        <button
+                          className={`p-3 border rounded-3xl w-[147px] text-left hover:text-[#00B69B] hover:bg-[#00B69B] hover:bg-opacity-20 ${
+                            activeStatus === "Выполнено"
+                              ? "bg-[#00B69B] text-white"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            setActiveStatus(
+                              activeStatus === "Выполнено" ? "" : "Выполнено"
+                            )
+                          }
+                        >
                           Выполнено
                         </button>
-                        <button className="p-3 border rounded-3xl w-[147px] text-left hover:text-[#EF3826] hover:bg-[#EF3826] hover:bg-opacity-20">
+                        <button
+                          className={`p-3 border rounded-3xl w-[147px] text-left hover:text-[#EF3826] hover:bg-[#EF3826] hover:bg-opacity-20 ${
+                            activeStatus === "Отклонено"
+                              ? "bg-[#EF3826] text-white"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            setActiveStatus(
+                              activeStatus === "Отклонено" ? "" : "Отклонено"
+                            )
+                          }
+                        >
                           Отклонено
                         </button>
-                        <button className="p-3 border rounded-3xl w-[147px] text-left hover:text-[#6226EF] hover:bg-[#6226EF] hover:bg-opacity-20">
+                        <button
+                          className={`p-3 border rounded-3xl w-[147px] text-left hover:text-[#6226EF] hover:bg-[#6226EF] hover:bg-opacity-20 ${
+                            activeStatus === "В процессе"
+                              ? "bg-[#6226EF] text-white"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            setActiveStatus(
+                              activeStatus === "В процессе" ? "" : "В процессе"
+                            )
+                          }
+                        >
                           В процессе
                         </button>
-                        <button className="p-3 border rounded-3xl w-[147px] text-left hover:text-[#FFA756] hover:bg-[#FFA756] hover:bg-opacity-20">
+                        <button
+                          className={`p-3 border rounded-3xl w-[147px] text-left hover:text-[#FFA756] hover:bg-[#FFA756] hover:bg-opacity-20 ${
+                            activeStatus === "Не назначено"
+                              ? "bg-[#FFA756] text-white"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            setActiveStatus(
+                              activeStatus === "Не назначено"
+                                ? ""
+                                : "Не назначено"
+                            )
+                          }
+                        >
                           Не назначено
                         </button>
                       </div>
-                      <div className="border"></div>
-                      <Button text="Применить" className="mx-auto px-[30px]" />
                     </div>
                   </div>
                 </div>
@@ -161,8 +228,15 @@ export const Filter = () => {
           </tbody>
         </table>
         <div className="flex flex-row gap-5 ">
-          <Button text="Применить" className=" px-[30px] text-[14px]" />
-          <button className="flex  rounded-lg px-[23px] text-[14px] hover:bg-[#EA0234] text-[#EA0234] hover:transition-colors duration-300 hover:text-white py-[10px] items-center gap-[6px]">
+          <Button
+            text="Применить"
+            className=" px-[30px] text-[14px]"
+            onClick={() => handleAddFiltration()}
+          />
+          <button
+            className="flex  rounded-lg px-[23px] text-[14px] hover:bg-[#EA0234] text-[#EA0234] hover:transition-colors duration-300 hover:text-white py-[10px] items-center gap-[6px]"
+            onClick={() => handleDeleteFiltration()}
+          >
             <svg
               width="24"
               height="24"

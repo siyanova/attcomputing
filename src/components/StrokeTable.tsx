@@ -3,9 +3,16 @@ import Path from "../../public/Path.svg";
 import { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
 import { Modal } from "@mui/material";
-import PopUpUpdateEngineer from "./PopUpUpdateEngineer";
 import { PopUpBg } from "./PopUpBg";
 import Button from "./Button";
+import PopUpUpdateApp from "./PopUpUpdateApp";
+
+type Engineer = {
+  ID: string;
+  Name: string;
+  Email: string;
+  TelegramID: string;
+};
 
 type TableAppls = {
   ID: string;
@@ -41,30 +48,31 @@ type Props = {
   name: {
     String: string;
     Valid: boolean;
-  }
+  };
   engeneer: {
-    Int64:number;
+    Int64: number;
     Valid: boolean;
-  }
+  };
   office: {
     String: string;
     Valid: boolean;
-  }
+  };
   status: {
     String: string;
     Valid: boolean;
-  }
+  };
   teacher: {
     String: string;
     Valid: boolean;
-  }
+  };
   startDate: string;
   endDate: {
     Time: string;
     Valid: boolean;
-  }
+  };
   tableAppl: TableAppls[];
   setTableAppl: Dispatch<SetStateAction<TableAppls[]>>;
+  engineers: Engineer[];
 };
 
 export const StrokeTable = ({
@@ -77,6 +85,7 @@ export const StrokeTable = ({
   startDate,
   endDate,
   setTableAppl,
+  engineers,
 }: Props) => {
   const [openPopUpDelete, setOpenPopUpDelete] = useState(false);
   const [openPopUpUpdate, setOpenPopUpUpdape] = useState(false);
@@ -91,15 +100,9 @@ export const StrokeTable = ({
     StartDate: startDate,
     EndDate: endDate,
   };
-  const dateObject: Date = new Date(startDate);
-  const dateObject1: Date = new Date(endDate.Time);
-  console.log(endDate)
-  const formattedDate1: string = dateObject1.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit'});
-  const formattedDate: string = dateObject.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' ,year: '2-digit' });
+  const dateObject = startDate.split("T")[0];
+  const dateObject1 = endDate.Time.split("T")[0];
 
-  const maxStroke = async()=>{
-    
-  }
   const handleDeleteStroke = async () => {
     try {
       const response = await axios.delete(
@@ -126,6 +129,11 @@ export const StrokeTable = ({
   };
   const [showNestedTable, setShowNestedTable] = useState(false);
 
+  const getEngineerName = (engineerId: number) => {
+    const engineer = engineers.find((item) => Number(item.ID) === engineerId);
+    return engineer ? engineer.Name : "";
+  };
+
   const toggleNestedTable = () => {
     setShowNestedTable(!showNestedTable);
   };
@@ -150,6 +158,20 @@ export const StrokeTable = ({
           </h2>
           <Button text="Удалить" onClick={() => handleDeleteStroke()} />
         </PopUpBg>
+      </Modal>
+      <Modal
+        open={openPopUpUpdate}
+        onClose={() => setOpenPopUpUpdape(false)}
+        closeAfterTransition
+        className="flex justify-center items-center"
+      >
+        <PopUpUpdateApp
+          setPopUp={setOpenPopUpUpdape}
+          title="Изменить заявку"
+          lastStrokeTable={lastStroke}
+          setStrokeTable={setTableAppl}
+          engineers={engineers}
+        />
       </Modal>
       <tr className="items-center rounded-full border-collapse">
         <td className="wrap py-[15px] px-[15px] items-center flex">
@@ -177,19 +199,26 @@ export const StrokeTable = ({
           <p className="p-4 max-w-[200px] mx-auto break-words">{name.String}</p>
         </td>
         <td>
-          <p className="p-4 max-w-[200px] mx-auto break-words">{engeneer.Int64}</p>
+          <p className="p-4 max-w-[200px] mx-auto break-words">
+            {getEngineerName(engeneer.Int64)}
+          </p>
         </td>
         <td>
-          <p className="p-4 max-w-[200px] mx-auto break-words">{office.String}</p>
+          <p className="p-4 max-w-[200px] mx-auto break-words">
+            {office.String}
+          </p>
         </td>
         <td>
-          <div className="text-[#00B69B] bg-[#00B69B] bg-opacity-20  text-[12px] rounded-md my-[24px] font-bold mx-[50px] px-4 py-2">
+          <div className={`text-white text-[12px] rounded-md my-[24px] font-bold mx-[50px] px-4 py-2 ${status.String === 'Выполнено' ? 'bg-[#00B69B]' : status.String === 'Отклонено' ? 'bg-[#EF3826]' : status.String === 'В процессе' ? 'bg-[#6226EF]' : 'bg-[#FFA756]'}`}>
             {status.String}
           </div>
         </td>
         <td>
           <div className="flex gap-2 w-full px-5">
-            <button className=" rounded-full shadow-md shadow-[#3F7AFF] bg-[#4880FF] fill-white py-3 px-2 duration-300 hover:shadow-[#D5D5D5] border border-[#4880FF] hover:border-[#D5D5D5] hover:fill-[#4880FF] hover:bg-white">
+            <button
+              onClick={() => setOpenPopUpUpdape(true)}
+              className=" rounded-full shadow-md shadow-[#3F7AFF] bg-[#4880FF] fill-white py-3 px-2 duration-300 hover:shadow-[#D5D5D5] border border-[#4880FF] hover:border-[#D5D5D5] hover:fill-[#4880FF] hover:bg-white"
+            >
               <svg
                 width="20"
                 height="20"
@@ -220,13 +249,19 @@ export const StrokeTable = ({
           <>
             <td></td>
             <td>
-              <p className="p-[20px] max-w-[200px] mx-auto break-words">{teacher.String}</p>
+              <p className="p-[20px] max-w-[200px] mx-auto break-words">
+                {teacher.String}
+              </p>
             </td>
             <td>
-              <p className="p-[20px] max-w-[200px] mx-auto break-words">с {formattedDate}</p>
+              <p className="p-[20px] max-w-[200px] mx-auto break-words">
+                с {dateObject}
+              </p>
             </td>
             <td>
-              <p className="p-[20px] max-w-[200px] mx-auto break-words">по {formattedDate1 ? formattedDate1 : 'Не назначено'}</p>
+              <p className="p-[20px] max-w-[200px] mx-auto break-words">
+                по {endDate.Valid == true && endDate.Time != '0001-01-01T00:00:00Z' ? dateObject1 : "Не назначено"}
+              </p>
             </td>
           </>
         )}
