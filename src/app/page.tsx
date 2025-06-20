@@ -56,6 +56,7 @@ export default function Home() {
   const [filterDate, setFilterDate] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [popUpAddApp, setPopUpAddApp] = useState(false);
+  const [pageSize, setPageSize] = useState(6);
 
   useEffect(() => {
     setLoading(true);
@@ -66,7 +67,7 @@ export default function Home() {
         },
         params: {
           page: paginationPage,
-          pageSize: 6,
+          pageSize: pageSize,
           nameTeacher: filterTeacher,
           engineerID: filterEngineer,
           orderDate: filterDate,
@@ -83,7 +84,7 @@ export default function Home() {
       .finally(() => {
         setLoading(false);
       });
-  }, [filterTeacher, filterDate, filterEngineer, filterStatus, paginationPage]);
+  }, [filterTeacher, filterDate, filterEngineer, filterStatus, paginationPage, pageSize]);
 
   const [engineers, setEngineers] = useState<Engineer[]>([]);
 
@@ -133,7 +134,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="text-[14px] h-screen w-full flex flex-col 2xl:items-center p-[20px] text-center">
+      <div className="text-[14px] w-full flex flex-col 2xl:items-center p-[20px] text-center">
         <div>
           <Button
             text="Добавить заявку"
@@ -173,24 +174,49 @@ export default function Home() {
             )}
           </table>
         </div>
-
-        {/* 🔹 Блок пагинации */}
-        <div className="flex bg-white fixed bottom-0 right-0 justify-center m-5 p-2 gap-2 w-auto border rounded-lg">
-          <button
-            onClick={() => setPaginationPage((prev) => Math.max(prev - 1, 1))}
-            disabled={paginationPage === 1}
-            className={`p-2 ${paginationPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+        <div className="flex fixed bottom-0 justify-center m-5 p-2 right-0 gap-2 w-auto">
+          <select
+            className="flex bg-white justify-center items-center p-3 w-auto border rounded-lg"
+            onChange={(e) => setPageSize(Number(e.target.value))}
           >
-            <Image src={PathStart} alt="Назад" />
-          </button>
-          <span className="py-2 px-4">Страница {paginationPage} из {totalPages}</span>
-          <button
-            onClick={() => setPaginationPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={paginationPage === totalPages}
-            className={`p-2 ${paginationPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            <Image src={PathEnd} alt="Вперед" />
-          </button>
+            {[
+              6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            ].map((item, index) => {
+              return (
+                <option value={item} key={index}>
+                  {item}
+                </option>
+              );
+            })}
+            <option></option>
+          </select>
+          <div className="flex bg-white justify-center p-2 w-auto border rounded-lg">
+            <button
+              onClick={() => setPaginationPage((prev) => Math.max(prev - 1, 1))}
+              disabled={paginationPage === 1}
+              className={`p-2 ${
+                paginationPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              <Image src={PathStart} alt="Назад" />
+            </button>
+            <span className="py-2 px-4">
+              Страница {paginationPage} из {totalPages}
+            </span>
+            <button
+              onClick={() =>
+                setPaginationPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={paginationPage === totalPages}
+              className={`p-2 ${
+                paginationPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              <Image src={PathEnd} alt="Вперед" />
+            </button>
+          </div>
         </div>
       </div>
     </Bg>

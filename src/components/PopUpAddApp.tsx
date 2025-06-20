@@ -70,18 +70,27 @@ const PopUpAddApp = ({
   const {
     handleSubmit,
     register,
+    setValue,
     formState: { errors },
   } = useForm<StrokeTableRequest>({
     resolver: zodResolver(StrokeTableFromSchema),
   });
 
   const engineersSelect: Engineer[] = [
-    { ID: "", Name: "Выберите инженера", Email: ""},
+    { ID: "", Name: "Выберите инженера", Email: "" },
     ...engineers,
   ];
 
   const status = ["Не назначено", "Выполнено", "Отклонено", "В процессе"];
 
+  const handleSetToday = () => {
+    const today = new Date().toISOString().split("T")[0];
+    setValue("startDate", today);
+  };
+  const handleSetTodayEndApp = () => {
+    const today = new Date().toISOString().split("T")[0];
+    setValue("endDate", today);
+  };
   const handleAddTable = async (formData: StrokeTableRequest) => {
     try {
       const response = await axios.post(
@@ -209,28 +218,44 @@ const PopUpAddApp = ({
           </div>
           <div className="flex flex-col gap-2 justify-end">
             <p className="text-[18px]">Дата поступления заявки:</p>
-            <input
-              {...register("startDate")}
-              type="text"
-              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-              placeholder="2024-12-30"
-              onChange={(e) => {
-                e.target.value = formatDate(e.target.value);
-              }}
-            />
+            <div className="flex flex-col">
+              <input
+                {...register("startDate")}
+                type="text"
+                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+                placeholder="2024-12-30"
+                onChange={(e) => {
+                  e.target.value = formatDate(e.target.value);
+                }}
+              />
+              <button
+                className="w-fit px-2 py-1 ml-auto text-blue-500"
+                onClick={handleSetToday}
+              >
+                сегодня
+              </button>
+            </div>
             <p className="text-sm text-red-500">{errors.startDate?.message}</p>
           </div>
           <div className="flex flex-col gap-2 justify-end">
             <p className="text-[18px]">Дата закрытия заявки: :</p>
-            <input
-              {...register("endDate")}
-              type="text"
-              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-              placeholder="2024-12-30"
-              onChange={(e) => {
-                e.target.value = formatDate(e.target.value);
-              }}
-            />
+            <div className="flex flex-col">
+              <input
+                {...register("endDate")}
+                type="text"
+                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+                placeholder="2024-12-30"
+                onChange={(e) => {
+                  e.target.value = formatDate(e.target.value);
+                }}
+              />
+              <button
+                className="w-fit px-2 py-1 ml-auto text-blue-500"
+                onClick={handleSetTodayEndApp}
+              >
+                сегодня
+              </button>
+            </div>
             <p className="text-sm text-red-500">{errors.endDate?.message}</p>
           </div>
         </div>

@@ -5,6 +5,7 @@ import path from "../../public/Path.svg";
 import React, { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import Button from "@/components/Button";
+import axios from "axios";
 
 type Engineer = {
   ID: string;
@@ -64,8 +65,31 @@ export const Filter = ({
     setFilterTeacher(activeFilterTeacher);
     setFilterEngineer(activeFilterEngineer != "0" ? activeFilterEngineer : "");
     setFilterStatus(activeStatus);
-    setPopupOpen(false)
+    setPopupOpen(false);
   };
+
+  const handleInstallPdf = () => {
+    axios
+      .get("http://localhost:5050/generatePdf", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "заявки.pdf");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.log("Ошибка выполнения запроса: ", error);
+      });
+  };
+  
 
   const engineersSelect: Engineer[] = [
     { ID: "0", Name: "Выберите инженера", Email: "" },
@@ -83,14 +107,19 @@ export const Filter = ({
     setFilterEngineer("");
     setFilterStatus("");
 
-    setPopupOpen(false)
+    setPopupOpen(false);
   };
 
   return (
     <div className="p-[20px] 2xl:max-w-[1240px] 2xl:mx-auto flex-col items-start flex w-full">
-      <h1 className="text-[32px] text-[#013970] font-bold mt-[25px]">
-        Список Заявок
-      </h1>
+      <div className="flex justify-between w-full items-center mt-[25px]">
+        <h1 className="text-[32px] text-[#013970] font-bold">Список Заявок</h1>
+        <Button
+          text="Скачать"
+          className=" px-[30px] text-[14px] h-fit"
+          onClick={() => handleInstallPdf()}
+        />
+      </div>
       <div className="mt-[20px] flex  items-center gap-5 w-full">
         <table className="table-fixed text-[14px] bg-white border-collapse  rounded-lg">
           <tbody>
@@ -226,14 +255,14 @@ export const Filter = ({
             </tr>
           </tbody>
         </table>
-        <div className="flex flex-row gap-5 ">
+        <div className="flex flex-row gap-4">
           <Button
             text="Применить"
             className=" px-[30px] text-[14px]"
             onClick={() => handleAddFiltration()}
           />
           <button
-            className="flex  rounded-lg px-[23px] text-[14px] hover:bg-[#EA0234] text-[#EA0234] hover:transition-colors duration-300 hover:text-white py-[10px] items-center gap-[6px]"
+            className="flex  rounded-lg p-2 text-[14px] hover:bg-[#EA0234] text-[#EA0234] hover:transition-colors duration-300 hover:text-white items-center gap-[6px]"
             onClick={() => handleDeleteFiltration()}
           >
             <svg
